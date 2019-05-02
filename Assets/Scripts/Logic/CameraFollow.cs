@@ -31,8 +31,8 @@ public class CameraFollow : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//找到目标物体
-		target = transform.parent.gameObject;
+        //找到目标物体
+        target = GameObject.Find("tank_prefab_1");
 		SetTarget(target);
 	}
 	
@@ -43,9 +43,9 @@ public class CameraFollow : MonoBehaviour {
 
 	public void SetTarget(GameObject target)
 	{
-		if (target.transform.FindChild("cameraPoint") != null)
+		if (target.transform.Find("cameraPoint") != null)
 		{
-			this.target = target.transform.FindChild("cameraPoint").gameObject;
+			this.target = target.transform.Find("cameraPoint").gameObject;
 		}
 		else
 		{
