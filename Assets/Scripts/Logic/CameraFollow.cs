@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour {
 	//横向角度
 	private float rot = 45f;
 	//横向旋转速度
-	private float rotSpeed = 0.5f;
+	private float rotSpeed = 15f;
 
 	//纵向角度
 	private float roll = 30f;
@@ -23,7 +23,7 @@ public class CameraFollow : MonoBehaviour {
 	private float maxRoll = 50f;
 	private float minRoll = 10;
 	//纵向旋转速度
-	private float rollSpeed = 0.5f;
+	private float rollSpeed = 15f;
 
 	//目标物体
 	private GameObject target;
@@ -32,7 +32,7 @@ public class CameraFollow : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //找到目标物体
-        target = GameObject.Find("tank_prefab_1");
+        target = GameObject.Find("tank_dark");
 		SetTarget(target);
 	}
 	
@@ -61,35 +61,55 @@ public class CameraFollow : MonoBehaviour {
 		if (Camera.main == null)
 			return;
 
-		//目标坐标
-		Vector3 targetPos = target.transform.position;
-		//用三角函数计算相机位置
-		Vector3 cameraPos;
-		float d = distance * Mathf.Cos(revertAngel(roll));
-		float height = distance * Mathf.Sin(revertAngel(roll));
-		cameraPos.x = targetPos.x + d * Mathf.Sin(revertAngel(rot));
-		cameraPos.y = targetPos.y + height;
-		cameraPos.z = targetPos.z - d * Mathf.Cos(revertAngel(rot));
-		Camera.main.transform.position = cameraPos;
-		//对准目标
-		Camera.main.transform.LookAt(target.transform);
+        ////目标坐标
+        //Vector3 targetPos = target.transform.position;
+        ////用三角函数计算相机位置
+        //Vector3 cameraPos;
+        //float d = distance * Mathf.Cos(revertAngel(roll));
+        //float height = distance * Mathf.Sin(revertAngel(roll));
+        //cameraPos.x = targetPos.x + d * Mathf.Sin(revertAngel(rot));
+        //cameraPos.y = targetPos.y + height;
+        //cameraPos.z = targetPos.z - d * Mathf.Cos(revertAngel(rot));
+        //Camera.main.transform.position = cameraPos;
+        ////对准目标
+        //Camera.main.transform.LookAt(target.transform);
+        FollowTarget();
 
 		Rotate();
 		Roll();
 		Zoom();
 	}
 
+    //跟随目标物体
+    void FollowTarget()
+    {
+        //目标坐标
+        Vector3 targetPos = target.transform.position;
+        //用三角函数计算相机位置
+        Vector3 cameraPos;
+        float d = distance * Mathf.Cos(revertAngel(roll));
+        float height = distance * Mathf.Sin(revertAngel(roll));
+        cameraPos.x = targetPos.x + d * Mathf.Sin(revertAngel(rot));
+        cameraPos.y = targetPos.y + height;
+        cameraPos.z = targetPos.z - d * Mathf.Cos(revertAngel(rot));
+        Camera.main.transform.position = cameraPos;
+        //对准目标
+        Camera.main.transform.LookAt(target.transform);
+    }
+    //计算角度
 	private float revertAngel(float angle)
 	{
 		return angle * Mathf.PI * 2 / 360;
 	}
 
+    //相机横向旋转
 	void Rotate()
 	{
 		float w = Input.GetAxis("Mouse X") * rotSpeed;
 		rot -= w;
 	}
 
+    //相机纵向旋转
 	void Roll()
 	{
 		float w = Input.GetAxis("Mouse Y") * rollSpeed;
@@ -100,6 +120,7 @@ public class CameraFollow : MonoBehaviour {
 			roll = minRoll;
 	}
 
+    //滚轮距离
 	void Zoom()
 	{
 		if (Input.GetAxis("Mouse ScrollWheel") > 0)
