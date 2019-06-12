@@ -21,7 +21,7 @@ public class CameraFollow : MonoBehaviour {
 	private float roll = 30f;
 	//纵向角度范围
 	private float maxRoll = 50f;
-	private float minRoll = 10;
+	private float minRoll = -10f;
 	//纵向旋转速度
 	private float rollSpeed = 15f;
 
@@ -61,18 +61,6 @@ public class CameraFollow : MonoBehaviour {
 		if (Camera.main == null)
 			return;
 
-        ////目标坐标
-        //Vector3 targetPos = target.transform.position;
-        ////用三角函数计算相机位置
-        //Vector3 cameraPos;
-        //float d = distance * Mathf.Cos(revertAngel(roll));
-        //float height = distance * Mathf.Sin(revertAngel(roll));
-        //cameraPos.x = targetPos.x + d * Mathf.Sin(revertAngel(rot));
-        //cameraPos.y = targetPos.y + height;
-        //cameraPos.z = targetPos.z - d * Mathf.Cos(revertAngel(rot));
-        //Camera.main.transform.position = cameraPos;
-        ////对准目标
-        //Camera.main.transform.LookAt(target.transform);
         FollowTarget();
 
 		Rotate();
