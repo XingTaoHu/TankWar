@@ -41,6 +41,13 @@ public class Tank : MonoBehaviour {
     //轮子
     private Transform wheels;
 
+    //履带
+    private Transform tracks;
+
+    //马达音源
+    private AudioSource motorAudioSource;
+    //马达音效
+    public AudioClip motorClip;
 
     // Use this for initialization
     void Start () {
@@ -52,9 +59,13 @@ public class Tank : MonoBehaviour {
         gun = transform.Find("turret/gun");
         //炮管旋转点
         gunPoint = transform.Find("turret/gunPoint");
-
         //获取轮子
         wheels = transform.Find("wheels");
+        //获取履带
+        tracks = transform.Find("tracks");
+        //马达音源
+        motorAudioSource = gameObject.AddComponent<AudioSource>();
+        motorAudioSource.spatialBlend = 1;
     }
 	
 	// Update is called once per frame
@@ -82,10 +93,18 @@ public class Tank : MonoBehaviour {
                 axleInfo.leftWheel.brakeTorque = brakeTorque;
                 axleInfo.rightWheel.brakeTorque = brakeTorque;
             }
+            //转动轮子
+            if (axleInfos[1] != null && axleInfo == axleInfos[1])
+            {
+                WheelsRotation(axleInfos[1].leftWheel);
+                TrackMove();
+            }
         }
         //炮塔炮管旋转
         TurretRotation();
         GunRotation();
+        //马达音效
+        MotorSound();
     }
 
     /// <summary>
@@ -160,6 +179,52 @@ public class Tank : MonoBehaviour {
         gun.localEulerAngles = new Vector3(euler.x, localEuler.y, localEuler.z);
     }
 
+    //轮子旋转
+    public void WheelsRotation(WheelCollider collider)
+    {
+        if (wheels == null)
+            return;
+        //获取旋转信息
+        Vector3 position;
+        Quaternion rotation;
+        collider.GetWorldPose(out position, out rotation);
+        //旋转每个轮子
+        foreach (Transform wheel in wheels)
+        {
+            wheel.rotation = rotation;
+        }
+    }
 
+    //履带滚动
+    public void TrackMove()
+    {
+        if (tracks == null)
+            return;
+        float offset = 0;
+        if (wheels.GetChild(0) != null)
+            offset = wheels.GetChild(0).localEulerAngles.x / 90;
+        foreach (Transform track in tracks)
+        {
+            MeshRenderer mr = track.gameObject.GetComponent<MeshRenderer>();
+            if (mr == null) continue;
+            Material mtl = mr.material;
+            mtl.mainTextureOffset = new Vector2(0, offset);
+        }
+    }
+
+    //马达音效
+    void MotorSound()
+    {
+        if (motor != 0 && !motorAudioSource.isPlaying)
+        {
+            motorAudioSource.loop = true;
+            motorAudioSource.clip = motorClip;
+            motorAudioSource.Play();
+        }
+        else if (motor == 0)
+        {
+            motorAudioSource.Pause();
+        }
+    }
 
 }

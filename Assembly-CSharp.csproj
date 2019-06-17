@@ -48,8 +48,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Logic\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Logic\SoundPlayer.cs" />
-     <Compile Include="Assets\Scripts\Logic\Tank.cs" />
-     <Compile Include="Assets\Scripts\Logic\TankWalk.cs" />
+     <Compile Include="Assets\Scripts\Logic\TestForce.cs" />
+     <Compile Include="Assets\Scripts\TankControl\AxleInfo.cs" />
+     <Compile Include="Assets\Scripts\TankControl\Tank.cs" />
      <Compile Include="Assets\Scripts\UI\Login.cs" />
      <None Include="Assets\Resources\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
  <Reference Include="UnityEngine.UI">
