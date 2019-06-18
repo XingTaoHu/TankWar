@@ -63,9 +63,9 @@ public class CameraFollow : MonoBehaviour {
 
         FollowTarget();
 
-		Rotate();
-		Roll();
-		Zoom();
+        Rotate();
+        Roll();
+        Zoom();
 	}
 
     //跟随目标物体

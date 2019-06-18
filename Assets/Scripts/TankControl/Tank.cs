@@ -82,13 +82,13 @@ public class Tank : MonoBehaviour {
                 axleInfo.rightWheel.steerAngle = steering;
             }
             //马力
-            if(axleInfo.motor)
+            if (axleInfo.motor)
             {
                 axleInfo.leftWheel.motorTorque = motor;
                 axleInfo.rightWheel.motorTorque = motor;
             }
             //制动
-            if(true)
+            if (true)
             {
                 axleInfo.leftWheel.brakeTorque = brakeTorque;
                 axleInfo.rightWheel.brakeTorque = brakeTorque;
@@ -115,7 +115,7 @@ public class Tank : MonoBehaviour {
         //马力和转向角
         motor = maxMotorTorque * Input.GetAxis("Vertical");
         steering = maxSteeringAngle * Input.GetAxis("Horizontal");
-
+       
         //制动
         brakeTorque = 0;
         foreach(AxleInfo axleInfo in axleInfos)
