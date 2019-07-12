@@ -2,6 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 操控类型
+/// </summary>
+public enum CtrlType
+{
+    NONE,
+    PLAYER,
+    COMPUTER
+}
+
 public class Tank : MonoBehaviour {
 
     //轮轴 
@@ -18,7 +28,6 @@ public class Tank : MonoBehaviour {
     private float steering = 0f;
     //最大转向角
     public float maxSteeringAngle;
-
 
     //炮塔
     private Transform turret;
@@ -40,14 +49,30 @@ public class Tank : MonoBehaviour {
 
     //轮子
     private Transform wheels;
-
     //履带
     private Transform tracks;
-
     //马达音源
     private AudioSource motorAudioSource;
     //马达音效
     public AudioClip motorClip;
+
+    //炮弹预设
+    public GameObject bullet;
+    //上一次开炮时间
+    private float lastShootTime = 0;
+    //开炮时间间隔
+    private float shootInterval = 0.5f;
+
+    //最大生命值
+    private float maxHp = 100;
+    //当前生命值
+    private float hp = 100;
+
+    //操控类型
+    public CtrlType ctrlType = CtrlType.PLAYER;
+
+    //焚烧特效
+    public GameObject destoryEffect;
 
     // Use this for initialization
     void Start () {
@@ -112,6 +137,10 @@ public class Tank : MonoBehaviour {
     /// </summary>
     public void PlayerCtrl()
     {
+        //只有为玩家的时候才生效
+        if (ctrlType != CtrlType.PLAYER)
+            return;
+
         //马力和转向角
         motor = maxMotorTorque * Input.GetAxis("Vertical");
         steering = maxSteeringAngle * Input.GetAxis("Horizontal");
@@ -131,6 +160,10 @@ public class Tank : MonoBehaviour {
         turretRotTarget = Camera.main.transform.eulerAngles.y;
         //炮管旋转
         gunRollTarget = Camera.main.transform.eulerAngles.x;
+
+        //发射炮弹
+        if (Input.GetMouseButton(0))
+            Shoot();
     }
 
     //炮塔旋转
@@ -224,6 +257,44 @@ public class Tank : MonoBehaviour {
         else if (motor == 0)
         {
             motorAudioSource.Pause();
+        }
+    }
+
+    /// <summary>
+    /// 发射炮弹
+    /// </summary>
+    public void Shoot()
+    { 
+        //发射间隔
+        if (Time.time - lastShootTime < shootInterval)
+            return;
+        //子弹
+        if (bullet == null)
+            return;
+        //发射
+        Vector3 pos = gun.position + gun.forward * 5;
+        Instantiate(bullet, pos, gun.rotation);
+        lastShootTime = Time.time;
+    }
+
+    /// <summary>
+    /// 被攻击
+    /// </summary>
+    /// <param name="att"></param>
+    public void BeAttacked(float att)
+    {
+        if (hp <= 0)
+            return;
+        if (hp > 0)
+        {
+            hp -= att;            
+        }
+        if (hp <= 0)
+        {
+            GameObject destroyObj = (GameObject)Instantiate(destoryEffect);
+            destroyObj.transform.SetParent(transform, false);
+            destroyObj.transform.localPosition = Vector3.zero;
+            ctrlType = CtrlType.NONE;
         }
     }
 
