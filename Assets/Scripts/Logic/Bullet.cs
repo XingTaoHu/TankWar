@@ -9,6 +9,12 @@ public class Bullet : MonoBehaviour {
     public float maxLiftTime = 2f;
     public float instantiateTime = 0f;
 
+    //攻击方
+    public GameObject attackTank;
+
+    //爆炸音效
+    public AudioClip explodeClip;
+
 	// Use this for initialization
 	void Start () {
         instantiateTime = Time.time;
@@ -26,8 +32,15 @@ public class Bullet : MonoBehaviour {
 
     void OnCollisionEnter(Collision collisionInfo)
     { 
+        //打到自身
+        if (collisionInfo.gameObject == attackTank)
+            return;
+
         //爆炸效果
-        Instantiate(explode, transform.position, transform.rotation);
+        GameObject explodeObj = (GameObject)Instantiate(explode, transform.position, transform.rotation);
+        AudioSource audioSource = explodeObj.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1;
+        audioSource.PlayOneShot(explodeClip);
         //销毁自身
         Destroy(gameObject);
         //击中tank
@@ -35,7 +48,7 @@ public class Bullet : MonoBehaviour {
         if (tank != null)
         {
             float att = GetAtt();
-            tank.BeAttacked(att);
+            tank.BeAttacked(att, attackTank);
         }
     }
 
