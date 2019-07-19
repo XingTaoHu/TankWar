@@ -5,12 +5,12 @@ using UnityEngine;
 /// <summary>
 /// 操控类型
 /// </summary>
-public enum CtrlType
-{
-    NONE,
-    PLAYER,
-    COMPUTER
-}
+//public enum CtrlType
+//{
+//    NONE,
+//    PLAYER,
+//    COMPUTER
+//}
 
 public class Tank : MonoBehaviour {
 
@@ -66,7 +66,7 @@ public class Tank : MonoBehaviour {
     //最大生命值
     private float maxHp = 100;
     //当前生命值
-    private float hp = 100;
+    public float hp = 100;
 
     //操控类型
     public CtrlType ctrlType = CtrlType.PLAYER;
@@ -92,6 +92,9 @@ public class Tank : MonoBehaviour {
     //发射音效
     public AudioClip shootClip;
 
+    //人工智能
+    private AI ai;
+
     // Use this for initialization
     void Start () {
         //炮塔
@@ -112,6 +115,12 @@ public class Tank : MonoBehaviour {
         //发射音源
         shootAudioSource = gameObject.AddComponent<AudioSource>();
         shootAudioSource.spatialBlend = 1;
+        //人工智能
+        if (ctrlType == CtrlType.COMPUTER)
+        { 
+            ai = gameObject.AddComponent<AI>();
+            ai.tank = this;
+        }
     }
 	
 	// Update is called once per frame
@@ -319,7 +328,11 @@ public class Tank : MonoBehaviour {
             return;
         if (hp > 0)
         {
-            hp -= att;            
+            hp -= att;    
+            //AI处理
+            if (ai != null) {
+                ai.OnAttacked(attackTank);
+            }
         }
         if (hp <= 0)
         {

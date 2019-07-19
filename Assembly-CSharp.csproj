@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\Logic\Bullet.cs" />
      <Compile Include="Assets\Scripts\Logic\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Logic\SoundPlayer.cs" />
+     <Compile Include="Assets\Scripts\TankControl\AI.cs" />
      <Compile Include="Assets\Scripts\TankControl\AxleInfo.cs" />
      <Compile Include="Assets\Scripts\TankControl\Tank.cs" />
      <Compile Include="Assets\Scripts\UI\Login.cs" />
