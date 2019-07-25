@@ -30,7 +30,7 @@ public class Tank : MonoBehaviour {
     public float maxSteeringAngle;
 
     //炮塔
-    private Transform turret;
+    public Transform turret;
     //炮塔的旋转点
     private Transform turretPoint;
     //炮塔旋转速度
@@ -127,6 +127,8 @@ public class Tank : MonoBehaviour {
 	void Update () {
         //玩家控制操控 
         PlayerCtrl();
+        ComputerCtrl();
+        NoneCtrl();
         //遍历车轴
         foreach(AxleInfo axleInfo in axleInfos)
         {
@@ -201,6 +203,30 @@ public class Tank : MonoBehaviour {
         //发射炮弹
         if (Input.GetMouseButton(0))
             Shoot();
+    }
+
+    //电脑控制
+    public void ComputerCtrl()
+    {
+        if (ctrlType != CtrlType.COMPUTER)
+            return;
+        //炮塔目标角度(由AI获取炮塔和炮管的目标角度)
+        Vector3 rot = ai.GetTurrentTarget();
+        turretRotTarget = rot.y;
+        gunRollTarget = rot.x;
+        //发射炮弹
+        if (ai.IsShoot())
+            Shoot();
+    }
+
+    //无人控制(对应于坦克被摧毁，马力和旋转角为0，有一定的制动，炮塔维持原角度)
+    public void NoneCtrl()
+    {
+        if (ctrlType != CtrlType.NONE)
+            return;
+        motor = 0;
+        steering = 0;
+        brakeTorque = maxBrakeTorque / 2;
     }
 
     //炮塔旋转

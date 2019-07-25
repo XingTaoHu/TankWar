@@ -119,4 +119,38 @@ public class AI : MonoBehaviour {
         target = attackTank;
     }
 
+    //获取炮管和炮塔的目标角度
+    public Vector3 GetTurrentTarget()
+    { 
+        //没有目标，朝着炮塔的正方向
+        if (target == null)
+        {
+            //坦克的正方向
+            float y = transform.eulerAngles.y;
+            Vector3 rot = new Vector3(0, y, 0);
+            return rot;
+        }
+        else {
+            Vector3 pos = transform.position;
+            Vector3 targetPos = target.transform.position;
+            Vector3 vec = targetPos - pos;
+            return Quaternion.LookRotation(vec).eulerAngles;
+        }
+    }
+
+    //是否发射炮弹
+    public bool IsShoot() {
+        if (target == null)
+            return false;
+        //目标角度差
+        float turrentRoll = tank.turret.eulerAngles.y;
+        float angle = turrentRoll - GetTurrentTarget().y;
+        if (angle < 0) angle += 360;
+        //30度以内发射炮弹
+        if (angle < 30 || angle > 330)
+            return true;
+        else
+            return false;
+    }
+
 }
