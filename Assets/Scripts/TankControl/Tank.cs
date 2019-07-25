@@ -217,6 +217,10 @@ public class Tank : MonoBehaviour {
         //发射炮弹
         if (ai.IsShoot())
             Shoot();
+        //移动
+        steering = ai.GetSteering();
+        motor = ai.GetMotor();
+        brakeTorque = ai.GetBrakeTorque();
     }
 
     //无人控制(对应于坦克被摧毁，马力和旋转角为0，有一定的制动，炮塔维持原角度)

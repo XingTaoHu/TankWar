@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Global\Define.cs" />
      <Compile Include="Assets\Scripts\Logic\Bullet.cs" />
      <Compile Include="Assets\Scripts\Logic\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Logic\Path.cs" />
      <Compile Include="Assets\Scripts\Logic\SoundPlayer.cs" />
      <Compile Include="Assets\Scripts\TankControl\AI.cs" />
      <Compile Include="Assets\Scripts\TankControl\AxleInfo.cs" />

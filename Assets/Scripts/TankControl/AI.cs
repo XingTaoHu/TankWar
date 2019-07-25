@@ -18,12 +18,11 @@ public class AI : MonoBehaviour {
     //搜寻间隔
     private float searchTargetInterval = 3;
 
-    //更改状态
-    public void ChangeStatus(Status status) {
-        if (status == Status.Patrol)
-            PatrolStart();
-        else if (status == Status.Attack)
-            AttackStart();
+    //路径
+    private Path path = new Path();
+
+    void Start() {
+        InitWaypoint();
     }
 
 	//状态处理
@@ -36,7 +35,27 @@ public class AI : MonoBehaviour {
             AttackUpdate();
         //目标更新
         TargetUpdate();
+        //行走
+        if (path.IsReach(transform)) {
+            path.NextWaypoint();
+        }
 	}
+
+    //初始化路径
+    void InitWaypoint() {
+        GameObject obj = GameObject.Find("WaypointContainer");
+        if (obj)
+            path.InitByObj(obj);
+    }
+
+    //更改状态
+    public void ChangeStatus(Status status)
+    {
+        if (status == Status.Patrol)
+            PatrolStart();
+        else if (status == Status.Attack)
+            AttackStart();
+    }
 
     //巡逻开始
     void PatrolStart() { 
@@ -151,6 +170,42 @@ public class AI : MonoBehaviour {
             return true;
         else
             return false;
+    }
+
+    //获取转向角
+    public float GetSteering() {
+        if (tank == null)
+            return 0;
+
+        Vector3 itp = transform.InverseTransformPoint(path.waypoint);
+        if (itp.x > path.deviation / 5) //右转
+            return tank.maxSteeringAngle;
+        else if (itp.x < -path.deviation / 5) //左转
+            return -tank.maxSteeringAngle;
+        else
+            return 0; //直行
+    }
+
+    //获取马力
+    public float GetMotor() {
+        if (tank == null)
+            return 0;
+        Vector3 itp = transform.InverseTransformPoint(path.waypoint);
+        float x = itp.x;
+        float z = itp.z;
+        float r = 6;
+        if (z < 0 && Mathf.Abs(x) < -z && Mathf.Abs(x) < r)
+            return -tank.maxMotorTorque;
+        else
+            return tank.maxMotorTorque;
+    }
+
+    //获取刹车
+    public float GetBrakeTorque() {
+        if (path.isFinish)
+            return tank.maxBrakeTorque;
+        else
+            return 0;
     }
 
 }
