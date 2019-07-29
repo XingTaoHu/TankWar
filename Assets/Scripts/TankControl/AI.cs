@@ -20,6 +20,10 @@ public class AI : MonoBehaviour {
 
     //路径
     private Path path = new Path();
+    //上次更新路径时间
+    private float lastUpdateWaypointTime = float.MinValue;
+    //更新路径cd
+    private float updateWaypointInterval = 10;
 
     void Start() {
         InitWaypoint();
@@ -41,12 +45,28 @@ public class AI : MonoBehaviour {
         }
 	}
 
+    //画出路径
+    void OnDrawGizmos()
+    {
+        path.DrawWaypoints();
+    }
+
+
     //初始化路径
     void InitWaypoint() {
         GameObject obj = GameObject.Find("WaypointContainer");
-        if (obj)
-            path.InitByObj(obj);
+        //根据路点生成路径
+        //if (obj)
+        //    path.InitByObj(obj);
+        //根据navmesh生成路径
+        //if (obj && obj.transform.GetChild(3) != null)
+        //{
+        //    Vector3 targetPos = obj.transform.GetChild(3).position;
+        //    path.InitByNavMeshPath(transform.position, targetPos);
+        //}
     }
+
+    
 
     //更改状态
     public void ChangeStatus(Status status)
@@ -62,16 +82,44 @@ public class AI : MonoBehaviour {
     
     }
     //攻击开始
-    void AttackStart() { 
-        
+    void AttackStart() {
+        Vector3 targetPos = target.transform.position;
+        path.InitByNavMeshPath(transform.position, targetPos);
     }
     //巡逻中
     void PatrolUpdate() { 
-        
+        //发现敌人
+        if (target != null)
+            ChangeStatus(Status.Attack);
+        //时间间隔
+        float interval = Time.time - lastUpdateWaypointTime;
+        if (interval < updateWaypointInterval)
+            return;
+        lastUpdateWaypointTime = Time.time;
+        //处理巡逻点
+        if (path.waypoints == null || path.isFinish)
+        {
+            GameObject obj = GameObject.Find("WaypointContainer");
+            int count = obj.transform.childCount;
+            if (count == 0) return;
+            int index = Random.Range(0, count);
+            Vector3 targetPos = obj.transform.GetChild(index).position;
+            path.InitByNavMeshPath(transform.position, targetPos);
+        }
     }
     //攻击中
     void AttackUpdate() { 
-        
+        //目标丢失
+        if (target == null)
+            ChangeStatus(Status.Patrol);
+        //时间间隔
+        float interval = Time.time - lastUpdateWaypointTime;
+        if (interval < updateWaypointInterval)
+            return;
+        lastUpdateWaypointTime = Time.time;
+        //更新路径
+        Vector3 targetPos = target.transform.position;
+        path.InitByNavMeshPath(transform.position, targetPos);
     }
 
 

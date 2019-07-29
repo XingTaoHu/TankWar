@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Path {
 
@@ -39,6 +40,43 @@ public class Path {
         this.isLoop = isLoop;
         isFinish = false;
     }
+
+    //根据导航图初始化路径
+    public void InitByNavMeshPath(Vector3 pos, Vector3 targetPos)
+    { 
+        //重置
+        waypoints = null;
+        index = -1;
+        //计算路径
+        NavMeshPath navPath = new NavMeshPath();
+        bool hasFoundPath = NavMesh.CalculatePath(pos, targetPos, NavMesh.AllAreas, navPath);
+        if (!hasFoundPath)
+            return;
+        //生成路径
+        int length = navPath.corners.Length;
+        waypoints = new Vector3[length];
+        for (int i = 0; i < length; i++)
+            waypoints[i] = navPath.corners[i];
+        index = 0;
+        waypoint = waypoints[index];
+        isFinish = false;
+    }
+
+    //画出路点
+    public void DrawWaypoints()
+    {
+        if (waypoints == null)
+            return;
+        int length = waypoints.Length;
+        for (int i = 0; i < length; i++)
+        {
+            if (i == index)
+                Gizmos.DrawSphere(waypoints[i], 1);
+            else
+                Gizmos.DrawCube(waypoints[i], Vector3.one);
+        }
+    }
+
 
     //是否到达目的地
     public bool IsReach(Transform trans) {
