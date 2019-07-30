@@ -166,6 +166,9 @@ public class AI : MonoBehaviour {
             //如果是自己
             if (targets[i] == gameObject)
                 continue;
+            //如果是队友
+            if (Battle.instance.IsSameCamp(gameObject, targets[i]))
+                continue;
             //死亡
             if (tankTrans.ctrlType == CtrlType.NONE)
                 continue;
@@ -183,6 +186,9 @@ public class AI : MonoBehaviour {
     }
     //被攻击
     public void OnAttacked(GameObject attackTank) {
+        //队友误伤
+        if (Battle.instance.IsSameCamp(gameObject, attackTank))
+            return;
         target = attackTank;
     }
 

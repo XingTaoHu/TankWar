@@ -33,7 +33,8 @@ public class CameraFollow : MonoBehaviour {
 	void Start () {
         //找到目标物体
         target = GameObject.Find("tank_dark");
-		SetTarget(target);
+        if(target != null)
+		    SetTarget(target);
 	}
 	
 	// Update is called once per frame
