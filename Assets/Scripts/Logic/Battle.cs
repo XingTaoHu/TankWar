@@ -47,7 +47,7 @@ public class Battle : MonoBehaviour {
         }
         for (int j = 0; j < camp2; j++)
         {
-            GenerateTank(2, j, spCamp2, j);
+            GenerateTank(2, j, spCamp2, camp1 + j);
         }
         //将第一个坦克设为玩家操控
         Tank tankCmp = battleTanks[0].tank;
