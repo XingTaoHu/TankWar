@@ -20,3 +20,11 @@ public enum Status
     Patrol,
     Attack,
 }
+
+/// <summary>
+/// panel层级
+/// </summary>
+public enum PanelLayer{
+    Panel,      //面板
+    Tips,       //提示
+}

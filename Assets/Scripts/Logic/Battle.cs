@@ -21,7 +21,7 @@ public class Battle : MonoBehaviour {
     }
 
     //开启一场两军对峙的游戏(分别为第一阵营数量和第二阵营数量)
-    void StartTwoCampBattle(int camp1, int camp2)
+    public void StartTwoCampBattle(int camp1, int camp2)
     { 
         //获取出生点容器
         Transform sp = GameObject.Find("SwopPoints").transform;
