@@ -79,6 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Global\Define.cs" />
+    <Compile Include="Assets\Scripts\Global\DontDestoryOnLoad.cs" />
+    <Compile Include="Assets\Scripts\Global\Root.cs" />
     <Compile Include="Assets\Scripts\Logic\Battle.cs" />
     <Compile Include="Assets\Scripts\Logic\BattleTank.cs" />
     <Compile Include="Assets\Scripts\Logic\Bullet.cs" />
@@ -88,7 +90,11 @@
     <Compile Include="Assets\Scripts\TankControl\AI.cs" />
     <Compile Include="Assets\Scripts\TankControl\AxleInfo.cs" />
     <Compile Include="Assets\Scripts\TankControl\Tank.cs" />
-    <Compile Include="Assets\Scripts\UI\Login.cs" />
+    <Compile Include="Assets\Scripts\UI\InfoPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\LoginPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\PanelBase.cs" />
+    <Compile Include="Assets\Scripts\UI\PanelManager.cs" />
+    <Compile Include="Assets\Scripts\UI\TitlePanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />

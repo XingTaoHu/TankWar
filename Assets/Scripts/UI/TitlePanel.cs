@@ -30,9 +30,10 @@ public class TitlePanel : PanelBase {
     public void OnStartClick()
     {
         //开始游戏
-        Battle.instance.StartTwoCampBattle(2, 2);
+        //Battle.instance.StartTwoCampBattle(2, 2);
+        PanelManager.instance.OpenPanel<LoginPanel>("");
         //关闭
-        Close();
+        //Close();
     }
 
     public void OnInfoClick(){

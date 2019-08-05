@@ -77,4 +77,5 @@ public class PanelManager : MonoBehaviour {
         GameObject.Destroy(panel.skin);
         Component.Destroy(panel);
     }
+
 }
