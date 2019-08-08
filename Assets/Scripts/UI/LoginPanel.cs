@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class LoginPanel : PanelBase {
 
@@ -23,10 +22,10 @@ public class LoginPanel : PanelBase {
     {
         base.OnShowing();
         Transform skinTrans = skin.transform;
-        closeBtn = skinTrans.FindChild("CloseBtn").GetComponent<Button>();
-        loginBtn = skinTrans.FindChild("LoginBtn").GetComponent<Button>();
-        usernameInput = skinTrans.FindChild("UsernameInput").GetComponent<InputField>();
-        passwordInput = skinTrans.FindChild("PasswordInput").GetComponent<InputField>();
+        closeBtn = skinTrans.Find("CloseBtn").GetComponent<Button>();
+        loginBtn = skinTrans.Find("LoginBtn").GetComponent<Button>();
+        usernameInput = skinTrans.Find("UsernameInput").GetComponent<InputField>();
+        passwordInput = skinTrans.Find("PasswordInput").GetComponent<InputField>();
         closeBtn.onClick.AddListener(OnCloseClicked);
         loginBtn.onClick.AddListener(OnLoginClicked);
     }
@@ -41,7 +40,7 @@ public class LoginPanel : PanelBase {
     {
         if (!string.IsNullOrEmpty(usernameInput.text) && !string.IsNullOrEmpty(passwordInput.text))
         {
-            SceneManager.LoadScene("Battle");
+            Scenes.getInstance().SwitchScene("Battle");
             PanelManager.instance.ClosePanel(typeof(TitlePanel).ToString());
             Close();
         }

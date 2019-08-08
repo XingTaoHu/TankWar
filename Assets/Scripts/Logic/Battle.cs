@@ -114,6 +114,7 @@ public class Battle : MonoBehaviour {
                     return false;
             }
         }
+        PanelManager.instance.OpenPanel<WinPanel>("", camp);
         return true;
     }
     //胜负判断

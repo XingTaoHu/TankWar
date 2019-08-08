@@ -81,6 +81,8 @@
     <Compile Include="Assets\Scripts\Global\Define.cs" />
     <Compile Include="Assets\Scripts\Global\DontDestoryOnLoad.cs" />
     <Compile Include="Assets\Scripts\Global\Root.cs" />
+    <Compile Include="Assets\Scripts\Global\Scenes.cs" />
+    <Compile Include="Assets\Scripts\Global\Singleton.cs" />
     <Compile Include="Assets\Scripts\Logic\Battle.cs" />
     <Compile Include="Assets\Scripts\Logic\BattleTank.cs" />
     <Compile Include="Assets\Scripts\Logic\Bullet.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="Assets\Scripts\UI\PanelBase.cs" />
     <Compile Include="Assets\Scripts\UI\PanelManager.cs" />
     <Compile Include="Assets\Scripts\UI\TitlePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\WinPanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />

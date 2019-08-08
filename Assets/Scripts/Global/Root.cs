@@ -6,6 +6,7 @@ public class Root : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Scenes.getInstance().SwitchScene("Start");
         PanelManager.instance.OpenPanel<TitlePanel>("");
 	}
 	
