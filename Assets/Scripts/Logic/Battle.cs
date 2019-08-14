@@ -17,7 +17,7 @@ public class Battle : MonoBehaviour {
         //单例
         instance = this;
         //开始战斗
-        StartTwoCampBattle(3, 3);
+        //StartTwoCampBattle(3, 3);
     }
 
     //开启一场两军对峙的游戏(分别为第一阵营数量和第二阵营数量)

@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\TankControl\Tank.cs" />
     <Compile Include="Assets\Scripts\UI\InfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\LoginPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\OptionPanel.cs" />
     <Compile Include="Assets\Scripts\UI\PanelBase.cs" />
     <Compile Include="Assets\Scripts\UI\PanelManager.cs" />
     <Compile Include="Assets\Scripts\UI\TitlePanel.cs" />

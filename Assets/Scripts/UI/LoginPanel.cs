@@ -40,8 +40,10 @@ public class LoginPanel : PanelBase {
     {
         if (!string.IsNullOrEmpty(usernameInput.text) && !string.IsNullOrEmpty(passwordInput.text))
         {
-            Scenes.getInstance().SwitchScene("Battle");
-            PanelManager.instance.ClosePanel(typeof(TitlePanel).ToString());
+            //Scenes.getInstance().SwitchScene("Battle");
+            //PanelManager.instance.ClosePanel(typeof(TitlePanel).ToString());
+            //Close();
+            PanelManager.instance.OpenPanel<OptionPanel>("");
             Close();
         }
         else

@@ -28,3 +28,6 @@ public enum PanelLayer{
     Panel,      //面板
     Tips,       //提示
 }
+
+//单场景加载完成后回调
+public delegate void SingleSceneLoadedCallback();
