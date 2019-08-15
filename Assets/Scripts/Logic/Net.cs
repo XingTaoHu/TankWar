@@ -37,6 +37,7 @@ public class Net : MonoBehaviour {
         sendBtn = transform.Find("SendBtn").GetComponent<Button>();
         connectBtn.onClick.AddListener(Connection);
         sendBtn.onClick.AddListener(Send);
+        recvStr = "";
     }
 
     void Update()
