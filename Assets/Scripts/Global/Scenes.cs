@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Scenes : Singleton<Scenes> {
 
-    public SingleSceneLoadedCallback singleLoadedCallback;
+    private Dictionary<string, List<SingleSceneLoadedCallback>> singleSceneLoadedDict = new Dictionary<string, List<SingleSceneLoadedCallback>>();
 
     public void SwitchScene(string name)
     {
@@ -14,16 +14,32 @@ public class Scenes : Singleton<Scenes> {
 
     public void SwitchSingleScene(string name, SingleSceneLoadedCallback callback)
     {
-        singleLoadedCallback = callback;
+        if(singleSceneLoadedDict.ContainsKey(name))
+        {
+            List<SingleSceneLoadedCallback> cbList = singleSceneLoadedDict[name];
+            if(!cbList.Contains(callback)){
+                cbList.Add(callback);
+            }
+        }
+        else
+        {
+            List<SingleSceneLoadedCallback> cbList = new List<SingleSceneLoadedCallback>();
+            cbList.Add(callback);
+            singleSceneLoadedDict.Add(name, cbList);
+        }
         SceneManager.LoadScene(name, LoadSceneMode.Single);
-        SceneManager.sceneLoaded += SingleLoadedEve;
     }
 
-    private void SingleLoadedEve(Scene s, LoadSceneMode l)
+    public void AfterSingleSceneLoaded(string name)
     {
-        if (singleLoadedCallback != null)
+        if((singleSceneLoadedDict != null) && singleSceneLoadedDict.ContainsKey(name))
         {
-            singleLoadedCallback();
+            List<SingleSceneLoadedCallback> cbList = singleSceneLoadedDict[name];
+            foreach(var item in cbList)
+            {
+                item();
+            }
+            singleSceneLoadedDict.Remove(name);
         }
     }
 }
