@@ -6,10 +6,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{3710F13A-37D4-D58C-EF1A-41D44817C154}</ProjectGuid>
+    <ProjectGuid>{E1EF47E8-F970-5818-5C04-7C7590F27A86}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Assembly-UnityScript</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>Assets</BaseDirectory>
@@ -46,30 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Global\Define.cs" />
-     <Compile Include="Assets\Scripts\Global\DontDestoryOnLoad.cs" />
-     <Compile Include="Assets\Scripts\Global\ObserverManager.cs" />
-     <Compile Include="Assets\Scripts\Global\Root.cs" />
-     <Compile Include="Assets\Scripts\Global\Scenes.cs" />
-     <Compile Include="Assets\Scripts\Global\Singleton.cs" />
-     <Compile Include="Assets\Scripts\Logic\Battle.cs" />
-     <Compile Include="Assets\Scripts\Logic\BattleTank.cs" />
-     <Compile Include="Assets\Scripts\Logic\Bullet.cs" />
-     <Compile Include="Assets\Scripts\Logic\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\Logic\Net.cs" />
-     <Compile Include="Assets\Scripts\Logic\Path.cs" />
-     <Compile Include="Assets\Scripts\Logic\SoundPlayer.cs" />
-     <Compile Include="Assets\Scripts\Logic\Walk.cs" />
-     <Compile Include="Assets\Scripts\TankControl\AI.cs" />
-     <Compile Include="Assets\Scripts\TankControl\AxleInfo.cs" />
-     <Compile Include="Assets\Scripts\TankControl\Tank.cs" />
-     <Compile Include="Assets\Scripts\UI\InfoPanel.cs" />
-     <Compile Include="Assets\Scripts\UI\LoginPanel.cs" />
-     <Compile Include="Assets\Scripts\UI\OptionPanel.cs" />
-     <Compile Include="Assets\Scripts\UI\PanelBase.cs" />
-     <Compile Include="Assets\Scripts\UI\PanelManager.cs" />
-     <Compile Include="Assets\Scripts\UI\TitlePanel.cs" />
-     <Compile Include="Assets\Scripts\UI\WinPanel.cs" />
+     <Compile Include="Assets\Resources\Particles\Legacy Particles\TimedObjectDestructor.js" />
      <None Include="Assets\Resources\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
