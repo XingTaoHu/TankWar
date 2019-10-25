@@ -89,7 +89,7 @@ public class Net : MonoBehaviour {
     private void ProcessData()
     {
         //小于字节长度
-        if (buffCount > sizeof(Int32))
+        if (buffCount < sizeof(Int32))
             return;
         //消息长度
         Array.Copy(readBuff, lenBytes, sizeof(Int32));
