@@ -31,6 +31,9 @@ public class Net : MonoBehaviour {
     byte[] lenBytes = new byte[sizeof(UInt32)];
     Int32 msgLength = 0;
 
+    //协议
+    ProtocolBase proto = new ProtocolBase();
+
     void Start()
     { 
         hostInput = transform.Find("HostInput").GetComponent<InputField>();
@@ -41,7 +44,7 @@ public class Net : MonoBehaviour {
         connectBtn = transform.Find("ConnectBtn").GetComponent<Button>();
         sendBtn = transform.Find("SendBtn").GetComponent<Button>();
         connectBtn.onClick.AddListener(Connection);
-        sendBtn.onClick.AddListener(Send);
+        sendBtn.onClick.AddListener(OnSendClick);
         recvStr = "";
     }
 
@@ -97,8 +100,10 @@ public class Net : MonoBehaviour {
         if (buffCount < msgLength + sizeof(Int32))
             return;
         //处理消息
-        string str = System.Text.Encoding.UTF8.GetString(readBuff, sizeof(Int32), msgLength);
-        recvStr = str;
+        //string str = System.Text.Encoding.UTF8.GetString(readBuff, sizeof(Int32), msgLength);
+        //recvStr = str;
+        ProtocolBase protocol = proto.Decode(readBuff, sizeof(Int32), msgLength);
+        HandleMsg(protocol);
         //清除已处理的消息
         int count = buffCount - msgLength - sizeof(Int32);
         Array.Copy(readBuff, msgLength, readBuff, 0, count);
@@ -107,9 +112,22 @@ public class Net : MonoBehaviour {
             ProcessData();
     }
 
-    public void Send() {
-        string str = textInput.text;
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(str);
+    private void HandleMsg(ProtocolBase protoBase)
+    {
+        ProtocolBytes proto = (ProtocolBytes)protoBase;
+        Debug.Log("接收:" + proto.GetDesc());
+    }
+
+    public void OnSendClick()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("HeatBeat");
+        Debug.Log("发送:" + protocol.GetDesc());
+        Send(protocol);
+    }
+
+    public void Send(ProtocolBase protocol) {
+        byte[] bytes = protocol.Encode();
         byte[] length = BitConverter.GetBytes(bytes.Length);
         byte[] sendbuff = length.Concat(bytes).ToArray();
         try
