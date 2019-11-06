@@ -15,6 +15,12 @@ public class Net : MonoBehaviour {
     private InputField hostInput;
     private InputField portInput;
     private InputField textInput;
+    //用户名密码登录按钮，获取添加分数
+    private InputField idInput;
+    private InputField pwInput;
+    private Button loginBtn;
+    private Button setBtn;
+    private Button getBtn;
     //文本框
     private Text recvText;
     private string recvStr;
@@ -43,8 +49,16 @@ public class Net : MonoBehaviour {
         clientText = transform.Find("ClientText").GetComponent<Text>();
         connectBtn = transform.Find("ConnectBtn").GetComponent<Button>();
         sendBtn = transform.Find("SendBtn").GetComponent<Button>();
+        idInput = transform.Find("IDInput").GetComponent<InputField>();
+        pwInput = transform.Find("PWInput").GetComponent<InputField>();
+        loginBtn = transform.Find("LoginBtn").GetComponent<Button>();
+        setBtn = transform.Find("SetBtn").GetComponent<Button>();
+        getBtn = transform.Find("GetBtn").GetComponent<Button>();
         connectBtn.onClick.AddListener(Connection);
         sendBtn.onClick.AddListener(OnSendClick);
+        loginBtn.onClick.AddListener(OnLoginClick);
+        setBtn.onClick.AddListener(OnSetScoreClick);
+        getBtn.onClick.AddListener(OnGetScoreClick);
         recvStr = "";
     }
 
@@ -115,7 +129,13 @@ public class Net : MonoBehaviour {
     private void HandleMsg(ProtocolBase protoBase)
     {
         ProtocolBytes proto = (ProtocolBytes)protoBase;
+        //获取参数 
+        int start = 0;
+        string protoName = proto.GetString(start, ref start);
+        int ret = proto.GetInt(start, ref start);
+        //显示
         Debug.Log("接收:" + proto.GetDesc());
+        recvStr = "接收 " + proto.GetName() + " " + ret.ToString();
     }
 
     public void OnSendClick()
@@ -138,5 +158,42 @@ public class Net : MonoBehaviour {
             Debug.LogError("发送数据错误：" + e.Message);
         }
     }
+
+    /// <summary>
+    /// 登录
+    /// </summary>
+    public void OnLoginClick()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("Login");
+        protocol.AddString(idInput.text);
+        protocol.AddString(pwInput.text);
+        Debug.Log("发送 " + protocol.GetDesc());
+        Send(protocol);
+    }
+
+    /// <summary>
+    /// 增加分数
+    /// </summary>
+    public void OnSetScoreClick()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("AddScore");
+        Debug.Log("发送 " + protocol.GetDesc());
+        Send(protocol);
+    }
+
+    /// <summary>
+    /// 获取分数
+    /// </summary>
+    public void OnGetScoreClick()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("GetScore");
+        Debug.Log("发送 " + protocol.GetDesc());
+        Send(protocol);
+    }
+
+   
 
 }
