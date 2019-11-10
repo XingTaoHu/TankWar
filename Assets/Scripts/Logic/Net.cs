@@ -39,7 +39,7 @@ public class Net : MonoBehaviour {
     Int32 msgLength = 0;
 
     //协议
-    ProtocolBase proto = new ProtocolBase();
+    ProtocolBase proto = new ProtocolBytes();
 
     void Start()
     { 
@@ -96,7 +96,6 @@ public class Net : MonoBehaviour {
         {
             //count是接收数据的大小
             int count = socket.EndReceive(ar);
-            Debug.Log("接收到的数据大小:" + count);
             //数据处理
             buffCount += count;
             ProcessData();
@@ -122,10 +121,10 @@ public class Net : MonoBehaviour {
         if (buffCount < msgLength + sizeof(Int32))
             return;
         //处理消息
-        string str = System.Text.Encoding.UTF8.GetString(readBuff, sizeof(Int32), msgLength);
-        recvStr = str;
-        //ProtocolBase protocol = proto.Decode(readBuff, sizeof(Int32), msgLength);
-        //HandleMsg(protocol);
+        //string str = System.Text.Encoding.UTF8.GetString(readBuff, sizeof(Int32), msgLength);
+        //recvStr = str;
+        ProtocolBase protocol = proto.Decode(readBuff, sizeof(Int32), msgLength);
+        HandleMsg(protocol);
         //清除已处理的消息
         int count = buffCount - msgLength - sizeof(Int32);
         Array.Copy(readBuff, msgLength, readBuff, 0, count);
@@ -143,7 +142,8 @@ public class Net : MonoBehaviour {
         int ret = proto.GetInt(start, ref start);
         //显示
         Debug.Log("接收:" + proto.GetDesc());
-        recvStr = "接收 " + protoName + " " + ret.ToString();
+        Debug.Log("接收protoName:" + protoName + ", ret:" + ret);
+        recvStr = "接收:" + protoName + " " + ret.ToString();
     }
 
     public void OnSendClick()
@@ -158,7 +158,6 @@ public class Net : MonoBehaviour {
         byte[] bytes = protocol.Encode();
         byte[] length = BitConverter.GetBytes(bytes.Length);
         byte[] sendbuff = length.Concat(bytes).ToArray();
-        Debug.Log("bytes length:" + bytes.Length + ", length length:" + length.Length + ", sendbuff length:" + sendbuff.Length);
         try
         {
             //socket.Send(sendbuff);
