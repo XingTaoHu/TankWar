@@ -92,6 +92,10 @@
     <Compile Include="Assets\Scripts\Logic\Path.cs" />
     <Compile Include="Assets\Scripts\Logic\SoundPlayer.cs" />
     <Compile Include="Assets\Scripts\Logic\Walk.cs" />
+    <Compile Include="Assets\Scripts\Protocol\ProtocolBase.cs" />
+    <Compile Include="Assets\Scripts\Protocol\ProtocolBytes.cs" />
+    <Compile Include="Assets\Scripts\Protocol\ProtocolStr.cs" />
+    <Compile Include="Assets\Scripts\Protocol\Sys.cs" />
     <Compile Include="Assets\Scripts\TankControl\AI.cs" />
     <Compile Include="Assets\Scripts\TankControl\AxleInfo.cs" />
     <Compile Include="Assets\Scripts\TankControl\Tank.cs" />

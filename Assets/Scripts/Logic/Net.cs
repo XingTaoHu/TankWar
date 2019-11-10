@@ -19,6 +19,7 @@ public class Net : MonoBehaviour {
     private InputField idInput;
     private InputField pwInput;
     private Button loginBtn;
+    private Button registerBtn;
     private Button setBtn;
     private Button getBtn;
     //文本框
@@ -43,20 +44,26 @@ public class Net : MonoBehaviour {
     void Start()
     { 
         hostInput = transform.Find("HostInput").GetComponent<InputField>();
+        hostInput.text = "127.0.0.1";
         portInput = transform.Find("PortInput").GetComponent<InputField>();
+        portInput.text = "1234";
         textInput = transform.Find("TextInput").GetComponent<InputField>();
         recvText = transform.Find("RecvText").GetComponent<Text>();
         clientText = transform.Find("ClientText").GetComponent<Text>();
         connectBtn = transform.Find("ConnectBtn").GetComponent<Button>();
         sendBtn = transform.Find("SendBtn").GetComponent<Button>();
         idInput = transform.Find("IDInput").GetComponent<InputField>();
+        idInput.text = "hxt";
         pwInput = transform.Find("PWInput").GetComponent<InputField>();
+        pwInput.text = "123456";
         loginBtn = transform.Find("LoginBtn").GetComponent<Button>();
+        registerBtn = transform.Find("RegisterBtn").GetComponent<Button>();
         setBtn = transform.Find("SetBtn").GetComponent<Button>();
         getBtn = transform.Find("GetBtn").GetComponent<Button>();
         connectBtn.onClick.AddListener(Connection);
         sendBtn.onClick.AddListener(OnSendClick);
         loginBtn.onClick.AddListener(OnLoginClick);
+        registerBtn.onClick.AddListener(OnRegisterClick);
         setBtn.onClick.AddListener(OnSetScoreClick);
         getBtn.onClick.AddListener(OnGetScoreClick);
         recvStr = "";
@@ -80,7 +87,7 @@ public class Net : MonoBehaviour {
         socket.Connect(host, port);
         clientText.text = socket.LocalEndPoint.ToString();
         //Recv
-        socket.BeginReceive(readBuff, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCb, null);
+        socket.BeginReceive(readBuff, buffCount, BUFFER_SIZE, SocketFlags.None, ReceiveCb, null);
     }
 
     //接收回调
@@ -89,11 +96,12 @@ public class Net : MonoBehaviour {
         {
             //count是接收数据的大小
             int count = socket.EndReceive(ar);
+            Debug.Log("接收到的数据大小:" + count);
             //数据处理
             buffCount += count;
             ProcessData();
             //继续接收
-            socket.BeginReceive(readBuff, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCb, null);
+            socket.BeginReceive(readBuff, buffCount, BUFFER_SIZE, SocketFlags.None, ReceiveCb, null);
         }
         catch (Exception e)
         {
@@ -114,10 +122,10 @@ public class Net : MonoBehaviour {
         if (buffCount < msgLength + sizeof(Int32))
             return;
         //处理消息
-        //string str = System.Text.Encoding.UTF8.GetString(readBuff, sizeof(Int32), msgLength);
-        //recvStr = str;
-        ProtocolBase protocol = proto.Decode(readBuff, sizeof(Int32), msgLength);
-        HandleMsg(protocol);
+        string str = System.Text.Encoding.UTF8.GetString(readBuff, sizeof(Int32), msgLength);
+        recvStr = str;
+        //ProtocolBase protocol = proto.Decode(readBuff, sizeof(Int32), msgLength);
+        //HandleMsg(protocol);
         //清除已处理的消息
         int count = buffCount - msgLength - sizeof(Int32);
         Array.Copy(readBuff, msgLength, readBuff, 0, count);
@@ -135,7 +143,7 @@ public class Net : MonoBehaviour {
         int ret = proto.GetInt(start, ref start);
         //显示
         Debug.Log("接收:" + proto.GetDesc());
-        recvStr = "接收 " + proto.GetName() + " " + ret.ToString();
+        recvStr = "接收 " + protoName + " " + ret.ToString();
     }
 
     public void OnSendClick()
@@ -150,13 +158,29 @@ public class Net : MonoBehaviour {
         byte[] bytes = protocol.Encode();
         byte[] length = BitConverter.GetBytes(bytes.Length);
         byte[] sendbuff = length.Concat(bytes).ToArray();
+        Debug.Log("bytes length:" + bytes.Length + ", length length:" + length.Length + ", sendbuff length:" + sendbuff.Length);
         try
         {
-            socket.Send(sendbuff);
+            //socket.Send(sendbuff);
+            //这里是异步发送，可以使用类似粘包分包处理方法确保sendbuff的全部内容被发送出去
+            socket.BeginSend(sendbuff, 0, sendbuff.Length, SocketFlags.None, null, null);
         }
         catch (Exception e){
             Debug.LogError("发送数据错误：" + e.Message);
         }
+    }
+
+    /// <summary>
+    /// 注册
+    /// </summary>
+    public void OnRegisterClick()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("Register");
+        protocol.AddString(idInput.text);
+        protocol.AddString(pwInput.text);
+        Debug.Log("发送 " + protocol.GetDesc());
+        Send(protocol);
     }
 
     /// <summary>
