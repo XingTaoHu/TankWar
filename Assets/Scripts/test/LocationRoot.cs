@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Root : MonoBehaviour {
+public class LocationRoot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Scenes.getInstance().SwitchScene("Start");
-        PanelManager.instance.OpenPanel<TitlePanel>("");
+        PanelManager.instance.OpenPanel<LoginPanel>("");
     }
 	
 	// Update is called once per frame
 	void Update () {
         NetMgr.Update();
-	}
+    }
 }
