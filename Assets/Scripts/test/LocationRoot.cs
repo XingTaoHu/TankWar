@@ -6,7 +6,8 @@ public class LocationRoot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        PanelManager.instance.OpenPanel<LoginPanel>("");
+        Application.runInBackground = true;
+        PanelManager.instance.OpenPanel<LocationLoginPanel>("");
     }
 	
 	// Update is called once per frame
