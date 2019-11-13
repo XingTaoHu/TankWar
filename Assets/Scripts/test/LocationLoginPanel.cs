@@ -68,7 +68,7 @@ public class LocationLoginPanel : PanelBase
         {
             Debug.Log("登录成功!");
             //开始游戏
-
+            Walk.instance.StartGame(userInput.text);
             Close();
         }
         else

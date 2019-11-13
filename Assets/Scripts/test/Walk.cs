@@ -22,6 +22,11 @@ public class Walk : MonoBehaviour{
         instance = this;
     }
 
+    void Update()
+    {
+        Move();
+    }
+
     //添加玩家
     void AddPlayer(string id, Vector3 pos, int score)
     {
@@ -84,14 +89,126 @@ public class Walk : MonoBehaviour{
         Vector3 pos = new Vector3(x, y, z);
         AddPlayer(id, pos, 0);
         //同步
-
+        SendPos();
         //获取列表
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("GetList"); ;
+        NetMgr.servConn.Send(protocol, GetList);
+        NetMgr.servConn.msgDist.AddListener("UpdateInfo", UpdateInfo);
+        NetMgr.servConn.msgDist.AddListener("PlayerLeave", PlayerLeave);
+        NetMgr.servConn.msgDist.AddListener("AddScore", AddScore);
     }
 
     //同步位置
     void SendPos()
     {
+        GameObject player = players[playerID];
+        Vector3 pos = player.transform.position;
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("UpdateInfo");
+        protocol.AddFloat(pos.x);
+        protocol.AddFloat(pos.y);
+        protocol.AddFloat(pos.z);
+        NetMgr.servConn.Send(protocol);
+    }
 
+    //更新列表
+    public void GetList(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int count = protocol.GetInt(start, ref start);
+        for (int i = 0; i < count; i++)
+        {
+            string id = protocol.GetString(start, ref start);
+            float x = protocol.GetFloat(start, ref start);
+            float y = protocol.GetFloat(start, ref start);
+            float z = protocol.GetFloat(start, ref start);
+            int score = protocol.GetInt(start, ref start);
+            Vector3 pos = new Vector3(x, y, z);
+            UpdateInfo(id, pos, score);
+        }
+    }
+
+    //更新信息
+    public void UpdateInfo(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        string id = protocol.GetString(start, ref start);
+        float x = protocol.GetFloat(start, ref start);
+        float y = protocol.GetFloat(start, ref start);
+        float z = protocol.GetFloat(start, ref start);
+        int score = protocol.GetInt(start, ref start);
+        Vector3 pos = new Vector3(x, y, z);
+        UpdateInfo(id, pos, score);
+    }
+
+    //玩家离开
+    public void PlayerLeave(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        string id = protocol.GetString(start, ref start);
+        DelPlayer(id);
+    }
+
+    //增加分数
+    void AddScore()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("AddScore");
+        NetMgr.servConn.Send(protocol);
+    }
+
+    void AddScore(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        string id = protocol.GetString(start, ref start);
+        int score = protocol.GetInt(start, ref start);
+        UpdateScore(id, score);
+    }
+
+    //移动
+    void Move()
+    {
+        if (string.IsNullOrEmpty(playerID))
+            return;
+        if (players[playerID] == null)
+            return;
+        if (Time.time - lastMoveTime < 0.1)
+            return;
+        lastMoveTime = Time.time;
+        GameObject player = players[playerID];
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+        {
+            player.transform.position += new Vector3(0, 0, 1);
+            SendPos();
+        }
+        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+        {
+            player.transform.position += new Vector3(0, 0, -1);
+            SendPos();
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        {
+            player.transform.position += new Vector3(-1, 0, 0);
+            SendPos();
+        }
+        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        {
+            player.transform.position += new Vector3(1, 0, 0);
+            SendPos();
+        }
+        else if (Input.GetKey(KeyCode.Space))
+        {
+            AddScore();
+        }
     }
 
 }
