@@ -28,6 +28,16 @@ public class LocationLoginPanel : PanelBase
         registBtn = skinTrans.Find("registBtn").GetComponent<Button>();
         loginBtn.onClick.AddListener(OnLoginClick);
         registBtn.onClick.AddListener(OnRegistClick);
+
+        //增加tabcoll
+        if(userInput.transform.GetComponent<Tabcoll>() == null)
+        {
+            userInput.gameObject.AddComponent<Tabcoll>();
+        }
+        if (pwInput.transform.GetComponent<Tabcoll>() == null)
+        {
+            pwInput.gameObject.AddComponent<Tabcoll>();
+        }
     }
     #endregion
 
