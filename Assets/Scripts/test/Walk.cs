@@ -97,6 +97,7 @@ public class Walk : MonoBehaviour{
         NetMgr.servConn.msgDist.AddListener("UpdateInfo", UpdateInfo);
         NetMgr.servConn.msgDist.AddListener("PlayerLeave", PlayerLeave);
         NetMgr.servConn.msgDist.AddListener("AddScore", AddScore);
+        NetMgr.servConn.msgDist.AddListener("Logout", Logout);
     }
 
     //同步位置
@@ -156,6 +157,30 @@ public class Walk : MonoBehaviour{
         DelPlayer(id);
     }
 
+    //退出或者被踢掉
+    public void Logout(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        string id = protocol.GetString(start, ref start);
+        Debug.Log("playerID:" + playerID + ", id:" + id);
+        if (playerID.Equals(id))
+        {
+            DelPlayer(id);
+            Reset();
+        }
+    }
+
+    public void Reset()
+    {
+        PanelManager.instance.OpenPanel<LocationLoginPanel>("");
+        playerID = "";
+        players.Clear();
+        lastMoveTime = 0;
+        NetMgr.servConn.Close();
+    }
+
     //增加分数
     void AddScore()
     {
@@ -178,6 +203,8 @@ public class Walk : MonoBehaviour{
     void Move()
     {
         if (string.IsNullOrEmpty(playerID))
+            return;
+        if (players.Count <= 0 || !players.ContainsKey(playerID))
             return;
         if (players[playerID] == null)
             return;

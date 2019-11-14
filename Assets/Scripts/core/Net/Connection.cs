@@ -62,6 +62,7 @@ public class Connection
     public bool Close()
     {
         try {
+            socket.Shutdown(SocketShutdown.Both);
             socket.Close();
             return true;
         }
