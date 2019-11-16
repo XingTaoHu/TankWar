@@ -5,16 +5,14 @@ using UnityEngine.UI;
 
 public class LoginPanel : PanelBase {
 
-    private Button closeBtn;
-    private Button loginBtn;
-    private InputField usernameInput;
-    private InputField passwordInput;
+    private Button startBtn;
+    private Button infoBtn;
 
     #region 生命周期
     public override void Init(params object[] args)
     {
         base.Init(args);
-        skinPath = "Prefabs/UI/LoginPanel";
+        skinPath = "Prefabs/UI/TitlePanel";
         layer = PanelLayer.Panel;
     }
 
@@ -22,34 +20,25 @@ public class LoginPanel : PanelBase {
     {
         base.OnShowing();
         Transform skinTrans = skin.transform;
-        closeBtn = skinTrans.Find("CloseBtn").GetComponent<Button>();
-        loginBtn = skinTrans.Find("LoginBtn").GetComponent<Button>();
-        usernameInput = skinTrans.Find("UsernameInput").GetComponent<InputField>();
-        passwordInput = skinTrans.Find("PasswordInput").GetComponent<InputField>();
-        closeBtn.onClick.AddListener(OnCloseClicked);
-        loginBtn.onClick.AddListener(OnLoginClicked);
+        startBtn = skinTrans.Find("StartBtn").GetComponent<Button>();
+        infoBtn = skinTrans.Find("InfoBtn").GetComponent<Button>();
+        startBtn.onClick.AddListener(OnStartClick);
+        infoBtn.onClick.AddListener(OnInfoClick);
     }
     #endregion
 
-    private void OnCloseClicked()
+    public void OnStartClick()
     {
-        Close();
+        //开始游戏
+        //Battle.instance.StartTwoCampBattle(2, 2);
+        PanelManager.instance.OpenPanel<LoginPanel>("");
+        //关闭
+        //Close();
     }
 
-    private void OnLoginClicked() 
-    {
-        if (!string.IsNullOrEmpty(usernameInput.text) && !string.IsNullOrEmpty(passwordInput.text))
-        {
-            //Scenes.getInstance().SwitchScene("Battle");
-            //PanelManager.instance.ClosePanel(typeof(TitlePanel).ToString());
-            //Close();
-            PanelManager.instance.OpenPanel<OptionPanel>("");
-            Close();
-        }
-        else
-        {
-            Debug.LogError("用户名或者密码为空!!!");    
-        }
+    public void OnInfoClick(){
+        PanelManager.instance.OpenPanel<InfoPanel>("");
     }
+
 
 }

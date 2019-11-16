@@ -38,7 +38,7 @@ public class OptionPanel : PanelBase {
         camp2 = dropdown2.value + 1;
 
         Scenes.getInstance().SwitchSingleScene("Battle", sceneLoaded);
-        PanelManager.instance.ClosePanel(typeof(TitlePanel).ToString());  
+        PanelManager.instance.ClosePanel(typeof(LoginPanel).ToString());  
     }
 
     public void OnCloseClick() {

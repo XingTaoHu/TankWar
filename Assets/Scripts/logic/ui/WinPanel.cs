@@ -52,7 +52,7 @@ public class WinPanel : PanelBase {
         Battle.instance.ClearBattle();
         Scenes.getInstance().SwitchScene("Start");
         Close();
-        PanelManager.instance.OpenPanel<TitlePanel>("");
+        PanelManager.instance.OpenPanel<LoginPanel>("");
     }
 
 }
