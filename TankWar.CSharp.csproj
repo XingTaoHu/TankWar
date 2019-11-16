@@ -84,6 +84,7 @@
     <Compile Include="Assets\Scripts\Global\Scenes.cs" />
     <Compile Include="Assets\Scripts\Global\Singleton.cs" />
     <Compile Include="Assets\Scripts\Global\Sys.cs" />
+    <Compile Include="Assets\Scripts\Global\Tabcoll.cs" />
     <Compile Include="Assets\Scripts\core\Net\Connection.cs" />
     <Compile Include="Assets\Scripts\core\Net\MsgDistribution.cs" />
     <Compile Include="Assets\Scripts\core\Net\NetMgr.cs" />
