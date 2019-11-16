@@ -5,14 +5,16 @@ using UnityEngine.UI;
 
 public class LoginPanel : PanelBase {
 
-    private Button startBtn;
-    private Button infoBtn;
+    private InputField idInput;
+    private InputField pwInput;
+    private Button loginBtn;
+    private Button registBtn;
 
     #region 生命周期
     public override void Init(params object[] args)
     {
         base.Init(args);
-        skinPath = "Prefabs/UI/TitlePanel";
+        skinPath = "Prefabs/UI/LoginPanel";
         layer = PanelLayer.Panel;
     }
 
@@ -20,24 +22,33 @@ public class LoginPanel : PanelBase {
     {
         base.OnShowing();
         Transform skinTrans = skin.transform;
-        startBtn = skinTrans.Find("StartBtn").GetComponent<Button>();
-        infoBtn = skinTrans.Find("InfoBtn").GetComponent<Button>();
-        startBtn.onClick.AddListener(OnStartClick);
-        infoBtn.onClick.AddListener(OnInfoClick);
+        idInput = skinTrans.Find("idInput").GetComponent<InputField>();
+        pwInput = skinTrans.Find("pwInput").GetComponent<InputField>();
+        loginBtn = skinTrans.Find("loginBtn").GetComponent<Button>();
+        registBtn = skinTrans.Find("registBtn").GetComponent<Button>();
+        loginBtn.onClick.AddListener(OnLoginClick);
+        registBtn.onClick.AddListener(OnRegistClick);
+
+        //增加tabcoll
+        if (idInput.transform.GetComponent<Tabcoll>() == null)
+        {
+            idInput.gameObject.AddComponent<Tabcoll>();
+        }
+        if (pwInput.transform.GetComponent<Tabcoll>() == null)
+        {
+            pwInput.gameObject.AddComponent<Tabcoll>();
+        }
     }
     #endregion
 
-    public void OnStartClick()
+    public void OnLoginClick()
     {
-        //开始游戏
-        //Battle.instance.StartTwoCampBattle(2, 2);
-        PanelManager.instance.OpenPanel<LoginPanel>("");
-        //关闭
-        //Close();
+
     }
 
-    public void OnInfoClick(){
-        PanelManager.instance.OpenPanel<InfoPanel>("");
+    public void OnRegistClick()
+    {
+
     }
 
 
