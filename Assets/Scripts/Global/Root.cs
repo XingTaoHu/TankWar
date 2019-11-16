@@ -7,7 +7,7 @@ public class Root : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Scenes.getInstance().SwitchScene("Start");
-        PanelManager.instance.OpenPanel<TitlePanel>("");
+        PanelManager.instance.OpenPanel<LoginPanel>("");
     }
 	
 	// Update is called once per frame
