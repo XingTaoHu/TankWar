@@ -43,12 +43,47 @@ public class LoginPanel : PanelBase {
 
     public void OnLoginClick()
     {
-
+        if(string.IsNullOrEmpty(idInput.text) || string.IsNullOrEmpty(pwInput.text))
+        {
+            PanelManager.instance.OpenPanel<TipPanel>("", "用户名或者密码为空！");
+            return;
+        }
+        if(NetMgr.servConn.status != Connection.Status.Connected)
+        {
+            if(!NetMgr.servConn.Connect("127.0.0.1", 1234))
+                PanelManager.instance.OpenPanel<TipPanel>("", "连接服务器失败！");
+        }
+        //发送登录协议
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("Login");
+        protocol.AddString(idInput.text);
+        protocol.AddString(pwInput.text);
+        Debug.Log("发送:" + protocol.GetDesc());
+        NetMgr.servConn.Send(protocol, OnLoginCallback);
     }
 
     public void OnRegistClick()
     {
+        PanelManager.instance.OpenPanel<RegisterPanel>("");
+    }
 
+    private void OnLoginCallback(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int ret = protocol.GetInt(start, ref start);
+        if(ret == 0)
+        {
+            Debug.Log("登录成功，开始游戏！");
+            //开始游戏
+
+            Close();
+        }
+        else
+        {
+            PanelManager.instance.OpenPanel<TipPanel>("", "登录失败，请检查用户名或密码！");
+        }
     }
 
 
