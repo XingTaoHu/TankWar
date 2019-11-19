@@ -77,7 +77,7 @@ public class LoginPanel : PanelBase {
         {
             Debug.Log("登录成功，开始游戏！");
             //开始游戏
-
+            PanelManager.instance.OpenPanel<RoomListPanel>("");
             Close();
         }
         else

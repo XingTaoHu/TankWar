@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Global\Define.cs" />
     <Compile Include="Assets\Scripts\Global\DontDestoryOnLoad.cs" />
+    <Compile Include="Assets\Scripts\Global\GameMgr.cs" />
     <Compile Include="Assets\Scripts\Global\Root.cs" />
     <Compile Include="Assets\Scripts\Global\Scenes.cs" />
     <Compile Include="Assets\Scripts\Global\Singleton.cs" />
@@ -104,7 +105,9 @@
     <Compile Include="Assets\Scripts\logic\ui\InfoPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\LoginPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\OptionPanel.cs" />
-    <Compile Include="Assets\Scripts\logic\ui\TitlePanel.cs" />
+    <Compile Include="Assets\Scripts\logic\ui\RegisterPanel.cs" />
+    <Compile Include="Assets\Scripts\logic\ui\RoomListPanel.cs" />
+    <Compile Include="Assets\Scripts\logic\ui\TipPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\WinPanel.cs" />
     <Compile Include="Assets\Scripts\test\LocationLoginPanel.cs" />
     <Compile Include="Assets\Scripts\test\LocationRegistPanel.cs" />
