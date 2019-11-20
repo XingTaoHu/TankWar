@@ -49,6 +49,18 @@ public class RoomListPanel : PanelBase
         ProtocolBytes protoGetAchieve = new ProtocolBytes();
         protoGetAchieve.AddString("GetAchieve");
         NetMgr.servConn.Send(protoGetAchieve);
+
+        //测试用
+        ProtocolBytes protoTest = new ProtocolBytes();
+        protoTest.AddString("GetRoomList");
+        protoTest.AddInt(2);
+
+        protoTest.AddInt(2);
+        protoTest.AddInt(1);
+
+        protoTest.AddInt(4);
+        protoTest.AddInt(2);
+        RecvGetRoomList(protoTest);
     }
 
     public override void OnClosing()
@@ -62,18 +74,61 @@ public class RoomListPanel : PanelBase
 
 
     void OnNewClick() 
-    { 
-        
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("CreateRoom");
+        NetMgr.servConn.Send(protocol, OnNewCallback);
+    }
+
+    void OnNewCallback(ProtocolBase proto) 
+    {
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int ret = protocol.GetInt(start, ref start);
+        if (ret == 0)
+        {
+            Debug.Log("房间创建成功");
+            PanelManager.instance.OpenPanel<RoomPanel>("");
+            Close();
+        }
+        else
+        { 
+            PanelManager.instance.OpenPanel<TipPanel>("", "创建房间失败！");
+        }
     }
 
     void OnRefreshClick()
-    { 
-        
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("GetRoomList");
+        NetMgr.servConn.Send(protocol);
     }
 
     void OnCloseClick()
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("Logout");
+        NetMgr.servConn.Send(protocol, OnCloseCallback);
+    }
+
+    void OnCloseCallback(ProtocolBase proto)
     { 
-        
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int ret = protocol.GetInt(start, ref start);
+        if (ret == 0)
+        {
+            Debug.Log("退出登录成功！");
+            PanelManager.instance.OpenPanel<LoginPanel>("");
+            NetMgr.servConn.Close();
+            Close();
+        }
+        else
+        {
+            Debug.Log("退出登录失败！");
+        }
     }
 
     //收到GetAchieve协议
@@ -125,6 +180,54 @@ public class RoomListPanel : PanelBase
         o.SetActive(true);
         //房间信息
         Transform trans = o.transform;
+        Text nameText = trans.Find("nameText").GetComponent<Text>();
+        Text countText = trans.Find("countText").GetComponent<Text>();
+        Text statusText = trans.Find("statusText").GetComponent<Text>();
+        nameText.text = "序号:" + (i + 1).ToString();
+        countText.text = "人数:" + num.ToString();
+        if (status == 1)
+        {
+            statusText.color = Color.black;
+            statusText.text = "状态:准备中";
+        }
+        else
+        {
+            statusText.color = Color.red;
+            statusText.text = "状态:战斗中";
+        }
+        Button btn = trans.Find("joinBtn").GetComponent<Button>();
+        btn.name = i.ToString();
+        btn.onClick.AddListener(delegate() {
+            OnJoinBtnClick(btn.name);
+        });
     }
 
+    //加入房间
+    public void OnJoinBtnClick(string name)
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("EnterRoom");
+        protocol.AddInt(int.Parse(name));
+        Debug.Log("请求进入房间:" + name);
+        NetMgr.servConn.Send(protocol, OnJoinCallnback);
+    }
+
+    //加入房间按钮返回
+    public void OnJoinCallnback(ProtocolBase proto)
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int ret = protocol.GetInt(start, ref start);
+        if (ret == 0)
+        {
+            Debug.Log("成功进入房间!");
+            PanelManager.instance.OpenPanel<RoomPanel>("");
+            Close();
+        }
+        else
+        { 
+            PanelManager.instance.OpenPanel<TipPanel>("", "进入房间失败!");
+        }
+    }
 }

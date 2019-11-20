@@ -107,6 +107,7 @@
     <Compile Include="Assets\Scripts\logic\ui\OptionPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\RegisterPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\RoomListPanel.cs" />
+    <Compile Include="Assets\Scripts\logic\ui\RoomPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\TipPanel.cs" />
     <Compile Include="Assets\Scripts\logic\ui\WinPanel.cs" />
     <Compile Include="Assets\Scripts\test\LocationLoginPanel.cs" />
