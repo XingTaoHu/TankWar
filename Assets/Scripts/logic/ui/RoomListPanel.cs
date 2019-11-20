@@ -38,8 +38,28 @@ public class RoomListPanel : PanelBase
         newBtn.onClick.AddListener(OnNewClick);
         refreshBtn.onClick.AddListener(OnRefreshClick);
         closeBtn.onClick.AddListener(OnCloseClick);
+
+        //监听
+        NetMgr.servConn.msgDist.AddListener("GetAchieve", RecvGetAchieve);
+        NetMgr.servConn.msgDist.AddListener("GetRoomList", RecvGetRoomList);
+        //发送查询
+        ProtocolBytes protoGetRoomList = new ProtocolBytes();
+        protoGetRoomList.AddString("GetRoomList");
+        NetMgr.servConn.Send(protoGetRoomList);
+        ProtocolBytes protoGetAchieve = new ProtocolBytes();
+        protoGetAchieve.AddString("GetAchieve");
+        NetMgr.servConn.Send(protoGetAchieve);
+    }
+
+    public override void OnClosing()
+    {
+        base.OnClosing();
+        NetMgr.servConn.msgDist.DelListener("GetAchieve", RecvGetAchieve);
+        NetMgr.servConn.msgDist.DelListener("GetRoomList", RecvGetRoomList);
     }
     #endregion
+
+
 
     void OnNewClick() 
     { 
@@ -54,6 +74,57 @@ public class RoomListPanel : PanelBase
     void OnCloseClick()
     { 
         
+    }
+
+    //收到GetAchieve协议
+    public void RecvGetAchieve(ProtocolBase proto)
+    {
+        //解析协议
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int win = protocol.GetInt(start, ref start);
+        int lose = protocol.GetInt(start, ref start);
+        //处理
+        idText.text = "指挥官:" + GameMgr.instance.id;
+        winText.text = win.ToString();
+        loseText.text = lose.ToString();
+    }
+
+    //收到GetRoomList协议
+    public void RecvGetRoomList(ProtocolBase proto)
+    {
+        ClearRoomUnit();
+        ProtocolBytes protocol = (ProtocolBytes)proto;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        int count = protocol.GetInt(start, ref start);
+        for (int i = 0; i < count; i++)
+        {
+            int num = protocol.GetInt(start, ref start);
+            int status = protocol.GetInt(start, ref start);
+            GenerateRoomUnit(i, num, status);
+        }
+    }
+
+    //清空房间
+    public void ClearRoomUnit()
+    {
+        for (int i = 0; i < content.childCount; i++)
+        {
+            if (content.GetChild(i).name.Contains("Clone"))
+                Destroy(content.GetChild(i).gameObject);
+        }
+    }
+
+    //创建一个房间单元
+    public void GenerateRoomUnit(int i, int num, int status)
+    {
+        GameObject o = Instantiate(roomPrefab);
+        o.transform.SetParent(content);
+        o.SetActive(true);
+        //房间信息
+        Transform trans = o.transform;
     }
 
 }
