@@ -39,24 +39,6 @@ public class RoomPanel : PanelBase
         ProtocolBytes protocol = new ProtocolBytes();
         protocol.AddString("GetRoomInfo");
         NetMgr.servConn.Send(protocol);
-
-        //测试
-        ProtocolBytes protoTest = new ProtocolBytes();
-        protoTest.AddString("GetRoomInfo");
-        protoTest.AddInt(2);
-
-        protoTest.AddString("Killer");
-        protoTest.AddInt(1);
-        protoTest.AddInt(12);
-        protoTest.AddInt(17);
-        protoTest.AddInt(0);
-
-        protoTest.AddString("Rojish");
-        protoTest.AddInt(2);
-        protoTest.AddInt(67);
-        protoTest.AddInt(45);
-        protoTest.AddInt(1);
-        RecvGetRoomInfo(protoTest);
     }
 
     public override void OnClosing()

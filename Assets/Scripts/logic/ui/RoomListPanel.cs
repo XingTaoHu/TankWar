@@ -49,18 +49,6 @@ public class RoomListPanel : PanelBase
         ProtocolBytes protoGetAchieve = new ProtocolBytes();
         protoGetAchieve.AddString("GetAchieve");
         NetMgr.servConn.Send(protoGetAchieve);
-
-        //测试用
-        ProtocolBytes protoTest = new ProtocolBytes();
-        protoTest.AddString("GetRoomList");
-        protoTest.AddInt(2);
-
-        protoTest.AddInt(2);
-        protoTest.AddInt(1);
-
-        protoTest.AddInt(4);
-        protoTest.AddInt(2);
-        RecvGetRoomList(protoTest);
     }
 
     public override void OnClosing()
@@ -141,7 +129,7 @@ public class RoomListPanel : PanelBase
         int win = protocol.GetInt(start, ref start);
         int lose = protocol.GetInt(start, ref start);
         //处理
-        idText.text = "指挥官:" + GameMgr.instance.id;
+        idText.text = GameMgr.instance.id;
         winText.text = win.ToString();
         loseText.text = lose.ToString();
     }
