@@ -148,8 +148,10 @@ public class RoomPanel : PanelBase
     {
         ProtocolBytes protocol = (ProtocolBytes)proto;
         //开始战斗
-
-        Close();
+        Scenes.getInstance().SwitchSceneWithCallback("Battle", delegate () {
+            MultiBattle.instance.StartBattle((ProtocolBytes)proto);
+            Close();
+        });
     }
 
 }

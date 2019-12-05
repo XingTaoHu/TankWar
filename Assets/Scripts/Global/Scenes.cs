@@ -6,10 +6,24 @@ using UnityEngine.SceneManagement;
 public class Scenes : Singleton<Scenes> {
 
     private Dictionary<string, List<SingleSceneLoadedCallback>> singleSceneLoadedDict = new Dictionary<string, List<SingleSceneLoadedCallback>>();
+    private SingleSceneLoadedCallback loadedCallback;
 
     public void SwitchScene(string name)
     {
         SceneManager.LoadScene(name);
+    }
+
+    public void SwitchSceneWithCallback(string name, SingleSceneLoadedCallback callback)
+    {
+        loadedCallback = callback;
+        SceneManager.LoadScene(name);
+        SceneManager.sceneLoaded += SceneLoaded;
+    }
+    private void SceneLoaded(Scene scene, LoadSceneMode sceneType)
+    {
+        Debug.Log(scene.name + " is load complete!");
+        if (loadedCallback != null)
+            loadedCallback();
     }
 
     public void SwitchSingleScene(string name, SingleSceneLoadedCallback callback)
@@ -42,4 +56,5 @@ public class Scenes : Singleton<Scenes> {
             singleSceneLoadedDict.Remove(name);
         }
     }
+
 }
