@@ -95,6 +95,19 @@ public class Tank : MonoBehaviour {
     //人工智能
     private AI ai;
 
+    //网络同步
+    private float lastSendInfoTime = float.MinValue;
+    //上一次同步的位置信息
+    private Vector3 lPos;
+    private Vector3 lRot;
+    //预测的位置坐标和旋转角度
+    private Vector3 fPos;
+    private Vector3 fRot;
+    //两次同步信息的时间间隔
+    private float delta = 1;
+    //上次同步信息的时间
+    private float lastRecvInfoTime = float.MinValue;
+
     // Use this for initialization
     void Start () {
         //炮塔
@@ -178,6 +191,12 @@ public class Tank : MonoBehaviour {
     /// </summary>
     public void PlayerCtrl()
     {
+        if (ctrlType == CtrlType.NET)
+        {
+            NetUpdate();
+            return;
+        }
+
         //只有为玩家的时候才生效
         if (ctrlType != CtrlType.PLAYER)
             return;
@@ -203,6 +222,13 @@ public class Tank : MonoBehaviour {
         //发射炮弹
         if (Input.GetMouseButton(0))
             Shoot();
+
+        //网络同步
+        if (Time.time - lastSendInfoTime > 0.2)
+        {
+            SendUnitInfo();
+            lastSendInfoTime = Time.time;
+        }
     }
 
     //电脑控制
@@ -472,6 +498,130 @@ public class Tank : MonoBehaviour {
         if (Time.time - killUIStartTime < 1f) {
             Rect rect = new Rect(Screen.width / 2 - killUI.width / 2, 30, killUI.width, killUI.height);
             GUI.DrawTexture(rect, killUI);
+        }
+    }
+
+    /// <summary>
+    /// 发送同步信息
+    /// </summary>
+    public void SendUnitInfo()
+    {
+        ProtocolBytes proto = new ProtocolBytes();
+        proto.AddString("UpdateUnitInfo");
+        Vector3 pos = transform.position;
+        Vector3 rot = transform.eulerAngles;
+        proto.AddFloat(pos.x);
+        proto.AddFloat(pos.y);
+        proto.AddFloat(pos.z);
+        proto.AddFloat(rot.x);
+        proto.AddFloat(rot.y);
+        proto.AddFloat(rot.z);
+        float angleY = turretRotTarget;
+        proto.AddFloat(angleY);
+        float angleX = gunRollTarget;
+        proto.AddFloat(angleX);
+        NetMgr.servConn.Send(proto);
+    }
+
+    /// <summary>
+    /// 位置预测
+    /// </summary>
+    /// <param name="nPos"></param>
+    /// <param name="nRot"></param>
+    public void NetForecastInfo(Vector3 nPos, Vector3 nRot)
+    {
+        //预测的位置
+        fPos = lPos + (nPos - lPos) * 2;
+        fRot = lRot + (nRot - lRot) * 2;
+        //异常的网络延迟
+        if (Time.time - lastRecvInfoTime > 0.3f)
+        {
+            fPos = nPos;
+            fRot = nRot;
+        }
+        //时间
+        delta = Time.time - lastRecvInfoTime;
+        //更新
+        lPos = nPos;
+        lRot = nRot;
+        lastRecvInfoTime = Time.time;
+    }
+
+    /// <summary>
+    /// 初始化位置预测数据
+    /// </summary>
+    public void InitNetCtrl()
+    {
+        lPos = transform.position;
+        lRot = transform.eulerAngles;
+        fPos = transform.position;
+        lRot = transform.eulerAngles;
+        Rigidbody r = GetComponent<Rigidbody>();
+        r.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    /// <summary>
+    /// 网络同步状态预测更新
+    /// </summary>
+    public void NetUpdate()
+    {
+        //位置同步
+        Vector3 pos = transform.position;
+        Vector3 rot = transform.eulerAngles;
+        if (delta > 0)
+        {
+            transform.position = Vector3.Lerp(pos, fPos, delta);
+            transform.rotation = Quaternion.Lerp(Quaternion.Euler(rot), Quaternion.Euler(fRot), delta);
+        }
+        //炮塔炮管旋转
+        TurretRotation();
+        GunRotation();
+        //轮子履带马达音效
+        NetWheelsRotation();
+    }
+
+    /// <summary>
+    /// 实现炮管炮塔旋转
+    /// </summary>
+    /// <param name="y"></param>
+    /// <param name="x"></param>
+    public void NetTurretTarget(float y, float x)
+    {
+        turretRotTarget = y;
+        gunRollTarget = x;
+    }
+
+    /// <summary>
+    /// 轮子履带马达音效
+    /// </summary>
+    public void NetWheelsRotation() {
+        float z = transform.InverseTransformPoint(fPos).z;
+        //判断坦克是否正在移动
+        if (Mathf.Abs(z) < 0.1f || delta <= 0.05f)
+        {
+            motorAudioSource.Pause();
+            return;
+        }
+        //轮子
+        foreach (Transform wheel in wheels)
+        {
+            wheel.localEulerAngles += new Vector3(360 * z / delta, 0, 0);
+        }
+        //履带
+        float offset = -wheels.GetChild(0).localEulerAngles.x / 90f;
+        foreach (Transform track in tracks)
+        { 
+            MeshRenderer mr = track.gameObject.GetComponent<MeshRenderer>();
+            if (mr == null) continue;
+            Material mtl = mr.material;
+            mtl.mainTextureOffset = new Vector2(0, offset);
+        }
+        //声音
+        if (!motorAudioSource.isPlaying)
+        {
+            motorAudioSource.loop = true;
+            motorAudioSource.clip = motorClip;
+            motorAudioSource.Play();
         }
     }
 

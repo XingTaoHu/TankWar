@@ -80,7 +80,7 @@ public class MultiBattle : MonoBehaviour
             GenerateTank(id, team, swopID);
         }
         ////开启监听
-        //NetMgr.servConn.msgDist.AddListener("UpdateUnitInfo", RecvUpdateUnitInfo);
+        NetMgr.servConn.msgDist.AddListener("UpdateUnitInfo", RecvUpdateUnitInfo);
         //NetMgr.servConn.msgDist.AddListener("Shooting", RecvShooting);
         //NetMgr.servConn.msgDist.AddListener("Hit", RecvHit);
         //NetMgr.servConn.msgDist.AddListener("Result", RecvResult);
@@ -135,12 +135,48 @@ public class MultiBattle : MonoBehaviour
             CameraFollow cf = Camera.main.gameObject.GetComponent<CameraFollow>();
             GameObject target = bt.tank.gameObject;
             cf.SetTarget(target);
+            Debug.Log("生成玩家坦克：id" + id + ", gameMgr id:" + GameMgr.instance.id);
         }
         else
         {
-            //bt.tank.ctrlType = CtrlType.NET;
-            //bt.tank.InitNetCtrl();
+            bt.tank.ctrlType = CtrlType.NET;
+            bt.tank.InitNetCtrl();
+            Debug.Log("生成网络坦克:id:" + id);
         }
+    }
+
+    /// <summary>
+    /// 网络同步更新位置
+    /// </summary>
+    /// <param name="protoBase"></param>
+    public void RecvUpdateUnitInfo(ProtocolBase protoBase)
+    {
+        ProtocolBytes protocol = (ProtocolBytes)protoBase;
+        int start = 0;
+        string protoName = protocol.GetString(start, ref start);
+        string id = protocol.GetString(start, ref start);
+        Vector3 nPos;
+        Vector3 nRot;
+        nPos.x = protocol.GetFloat(start, ref start);
+        nPos.y = protocol.GetFloat(start, ref start);
+        nPos.z = protocol.GetFloat(start, ref start);
+        nRot.x = protocol.GetFloat(start, ref start);
+        nRot.y = protocol.GetFloat(start, ref start);
+        nRot.z = protocol.GetFloat(start, ref start);
+        float turretY = protocol.GetFloat(start, ref start);
+        float gunX = protocol.GetFloat(start, ref start);
+        Debug.Log("RecvUpdateUnitInfo :" + id);
+        if (!list.ContainsKey(id))
+        {
+            Debug.Log("RecvUpdateUnitInfo id == null");
+            return;
+        }
+        BattleTank bt = list[id];
+        //跳过同步自己的信息
+        if (id == GameMgr.instance.id)
+            return;
+        bt.tank.NetForecastInfo(nPos, nRot);
+        bt.tank.NetTurretTarget(turretY, gunX);
     }
 
 }

@@ -103,7 +103,7 @@ public class Connection
             return;
         //协议解码
         ProtocolBase protocol = proto.Decode(readBuff, sizeof(Int32), msgLength);
-        Debug.Log("收到消息:" + protocol.GetDesc());
+        //Debug.Log("收到消息:" + protocol.GetDesc());
         lock (msgDist.msgList)
         {
             msgDist.msgList.Add(protocol);
@@ -128,7 +128,7 @@ public class Connection
         byte[] length = BitConverter.GetBytes(b.Length);
         byte[] sendBuff = length.Concat(b).ToArray();
         socket.Send(sendBuff);
-        Debug.Log("发送消息:" + protocol.GetDesc());
+        //Debug.Log("发送消息:" + protocol.GetDesc());
         return true;
     }
 

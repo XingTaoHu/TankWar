@@ -32,18 +32,20 @@ public class CameraFollow : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //找到目标物体
-        target = GameObject.Find("tank_dark");
-        if(target != null)
-		    SetTarget(target);
+        //target = GameObject.Find("tank_dark");
+        //if(target != null)
+        //    SetTarget(target);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        LateUpdate();
 	}
 
 	public void SetTarget(GameObject target)
 	{
+        if (target == null)
+            Debug.LogError("摄像机跟随目标错误！！");
 		if (target.transform.Find("cameraPoint") != null)
 		{
 			this.target = target.transform.Find("cameraPoint").gameObject;

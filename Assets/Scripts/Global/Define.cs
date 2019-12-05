@@ -10,6 +10,7 @@ public enum CtrlType
     NONE,
     PLAYER,
     COMPUTER,
+    NET,
 }
 
 /// <summary>

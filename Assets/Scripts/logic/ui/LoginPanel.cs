@@ -76,6 +76,7 @@ public class LoginPanel : PanelBase {
         if(ret == 0)
         {
             Debug.Log("登录成功，开始游戏！");
+            GameMgr.instance.id = idInput.text;
             //开始游戏
             PanelManager.instance.OpenPanel<RoomListPanel>("");
             Close();
