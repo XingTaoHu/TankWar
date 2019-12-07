@@ -76,7 +76,6 @@ public class RoomListPanel : PanelBase
         int ret = protocol.GetInt(start, ref start);
         if (ret == 0)
         {
-            Debug.Log("房间创建成功");
             PanelManager.instance.OpenPanel<RoomPanel>("");
             Close();
         }
@@ -108,7 +107,6 @@ public class RoomListPanel : PanelBase
         int ret = protocol.GetInt(start, ref start);
         if (ret == 0)
         {
-            Debug.Log("退出登录成功！");
             PanelManager.instance.OpenPanel<LoginPanel>("");
             NetMgr.servConn.Close();
             Close();
@@ -196,7 +194,6 @@ public class RoomListPanel : PanelBase
         ProtocolBytes protocol = new ProtocolBytes();
         protocol.AddString("EnterRoom");
         protocol.AddInt(int.Parse(name));
-        Debug.Log("请求进入房间:" + name);
         NetMgr.servConn.Send(protocol, OnJoinCallnback);
     }
 
@@ -209,7 +206,6 @@ public class RoomListPanel : PanelBase
         int ret = protocol.GetInt(start, ref start);
         if (ret == 0)
         {
-            Debug.Log("成功进入房间!");
             PanelManager.instance.OpenPanel<RoomPanel>("");
             Close();
         }

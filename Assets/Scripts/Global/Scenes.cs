@@ -21,7 +21,7 @@ public class Scenes : Singleton<Scenes> {
     }
     private void SceneLoaded(Scene scene, LoadSceneMode sceneType)
     {
-        Debug.Log(scene.name + " is load complete!");
+        Debug.Log("Scene ：" + scene.name + " is load complete!");
         if (loadedCallback != null)
             loadedCallback();
     }

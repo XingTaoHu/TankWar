@@ -58,7 +58,6 @@ public class LoginPanel : PanelBase {
         protocol.AddString("Login");
         protocol.AddString(idInput.text);
         protocol.AddString(pwInput.text);
-        Debug.Log("发送:" + protocol.GetDesc());
         NetMgr.servConn.Send(protocol, OnLoginCallback);
     }
 

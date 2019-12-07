@@ -165,7 +165,6 @@ public class MultiBattle : MonoBehaviour
         nRot.z = protocol.GetFloat(start, ref start);
         float turretY = protocol.GetFloat(start, ref start);
         float gunX = protocol.GetFloat(start, ref start);
-        Debug.Log("RecvUpdateUnitInfo :" + id);
         if (!list.ContainsKey(id))
         {
             Debug.Log("RecvUpdateUnitInfo id == null");
@@ -175,6 +174,7 @@ public class MultiBattle : MonoBehaviour
         //跳过同步自己的信息
         if (id == GameMgr.instance.id)
             return;
+        Debug.Log("网络同步位置：id:" + id + ", pos:" + nPos + ", rot:" + nRot);
         bt.tank.NetForecastInfo(nPos, nRot);
         bt.tank.NetTurretTarget(turretY, gunX);
     }

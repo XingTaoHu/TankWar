@@ -35,7 +35,6 @@ public class MsgDistribution
     public void DispatchMsgEvent(ProtocolBase protocol)
     {
         string name = protocol.GetName();
-        Debug.Log("分发处理消息:" + name);
         if(eventDict.ContainsKey(name))
         {
             eventDict[name](protocol);
