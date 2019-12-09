@@ -372,6 +372,9 @@ public class Tank : MonoBehaviour {
             bulletCmp.attackTank = this.gameObject;
         lastShootTime = Time.time;
         shootAudioSource.PlayOneShot(shootClip);
+        //发送同步信息
+        if (ctrlType == CtrlType.PLAYER)
+            SendShootInfo(bulletObj.transform);
     }
 
     /// <summary>
@@ -524,6 +527,39 @@ public class Tank : MonoBehaviour {
     }
 
     /// <summary>
+    /// 发送射击信息
+    /// </summary>
+    /// <param name="bulletTrans">Bullet trans.</param>
+    public void SendShootInfo(Transform bulletTrans)
+    {
+        ProtocolBytes proto = new ProtocolBytes();
+        proto.AddString("Shooting");
+        Vector3 pos = bulletTrans.position;
+        Vector3 rot = bulletTrans.eulerAngles;
+        proto.AddFloat(pos.x);
+        proto.AddFloat(pos.y);
+        proto.AddFloat(pos.z);
+        proto.AddFloat(rot.x);
+        proto.AddFloat(rot.y);
+        proto.AddFloat(rot.z);
+        NetMgr.servConn.Send(proto);
+    }
+
+    /// <summary>
+    /// 发送伤害信息协议
+    /// </summary>
+    /// <param name="id">Identifier.</param>
+    /// <param name="damage">Damage.</param>
+    public void SendHit(string id, float damage)
+    {
+        ProtocolBytes protocol = new ProtocolBytes();
+        protocol.AddString("Hit");
+        protocol.AddString(id);
+        protocol.AddFloat(damage);
+        NetMgr.servConn.Send(protocol);
+    }
+
+    /// <summary>
     /// 位置预测
     /// </summary>
     /// <param name="nPos"></param>
@@ -625,4 +661,42 @@ public class Tank : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// 网络同步炮弹发射消息
+    /// </summary>
+    /// <param name="pos">Position.</param>
+    /// <param name="rot">Rot.</param>
+    public void NetShoot(Vector3 pos, Vector3 rot)
+    {
+        GameObject bulletObj = (GameObject)Instantiate(bullet, pos, Quaternion.Euler(rot));
+        Bullet bulletCmp = bulletObj.GetComponent<Bullet>();
+        if (bulletCmp != null) bulletCmp.attackTank = gameObject;
+        shootAudioSource.PlayOneShot(shootClip);
+    }
+
+    /// <summary>
+    /// 网络同步伤害结算消息
+    /// </summary>
+    /// <param name="att">Att.</param>
+    /// <param name="attackTank">Attack tank.</param>
+    public void NetBeAttacked(float att, GameObject attackTank)
+    {
+        if (hp <= 0)
+            return;
+        if (hp > 0)
+            hp -= att;
+        if(hp <= 0)
+        {
+            ctrlType = CtrlType.NONE;
+            GameObject destoryObj = (GameObject)Instantiate(destoryEffect);
+            destoryObj.transform.SetParent(transform, false);
+            destoryObj.transform.localPosition = Vector3.zero;
+            if(attackTank != null)
+            {
+                Tank tankCmp = attackTank.GetComponent<Tank>();
+                if (tankCmp != null && tankCmp.ctrlType == CtrlType.PLAYER)
+                    tankCmp.StartDrawKill();
+            }
+        }
+    }
 }

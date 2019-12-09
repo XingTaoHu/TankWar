@@ -49,10 +49,18 @@ public class WinPanel : PanelBase {
     #endregion
 
     void OnCloseClick() {
-        Battle.instance.ClearBattle();
-        Scenes.getInstance().SwitchScene("Start");
-        Close();
-        PanelManager.instance.OpenPanel<LoginPanel>("");
+        //Battle.instance.ClearBattle();
+        //Scenes.getInstance().SwitchScene("Start");
+        //Close();
+        //PanelManager.instance.OpenPanel<LoginPanel>("");
+
+        //清空战斗场景，切换到房间界面
+        MultiBattle.instance.ClearBattle();
+        Scenes.getInstance().SwitchSceneWithCallback("Start", delegate () {
+            //开始游戏
+            PanelManager.instance.OpenPanel<RoomPanel>("");
+            Close();
+        });
     }
 
 }

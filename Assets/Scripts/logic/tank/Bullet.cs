@@ -44,11 +44,18 @@ public class Bullet : MonoBehaviour {
         //销毁自身
         Destroy(gameObject);
         //击中tank
-        Tank tank = collisionInfo.gameObject.GetComponent<Tank>();
-        if (tank != null)
+        //Tank tank = collisionInfo.gameObject.GetComponent<Tank>();
+        //if (tank != null)
+        //{
+        //    float att = GetAtt();
+        //    tank.BeAttacked(att, attackTank);
+        //}
+        //发送伤害信息 
+        Tank tankCmp = collisionInfo.gameObject.GetComponent<Tank>();
+        if(tankCmp != null && attackTank.name == GameMgr.instance.id)
         {
             float att = GetAtt();
-            tank.BeAttacked(att, attackTank);
+            tankCmp.SendHit(tankCmp.name, att);
         }
     }
 
